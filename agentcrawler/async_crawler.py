@@ -1,12 +1,12 @@
 from tornado import httpclient, httputil, queues, gen
 import asyncio
 import requests
-from agentcrawler.crawler import BasicCrawler
+from agentcrawler.crawler import CrawlerBase
 import logging, time
 import collections
 from datetime import timedelta
 
-class AsyncCrawler(BasicCrawler):
+class AsyncCrawler(CrawlerBase):
     async def get(self,url,params,timeout,proxy=None,num_retries=6):
         time_wait=self.req_config["time_wait"]
 

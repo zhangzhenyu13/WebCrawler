@@ -28,7 +28,7 @@ class BaikemyCrawler(AsyncCrawler):
         async def get_links_from_url(url):
             response = await self.get(url)
             logging.info("fetched %s" % url)
-
+            
             html = response.body.decode(errors="ignore")
             await push_html(html)
             return [urljoin(url, remove_fragment(new_url)) for new_url in get_links(html)]

@@ -1,5 +1,6 @@
 {
+    "timeout":5,
     "num_retry":6,
-    "time_wait":10,
-    "factor":1
+    "time_wait":20,
+    "factor":2
 }
