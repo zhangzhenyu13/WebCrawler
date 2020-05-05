@@ -6,6 +6,7 @@ from agentcrawler import data_path
 from urllib.parse import urljoin, urldefrag
 from html.parser import HTMLParser
 import json
+from agentcrawler.utils.manage_downloaded_files import get_downloaded_urls
 logging.getLogger().setLevel(logging.INFO)
 
 
@@ -22,8 +23,11 @@ class BaikemyCrawler(SimpleCrawler):
 
         def push_html(url,html):
             logging.info("downloaded data from {} :\n{}...".format( url, html[:50]) )
-            line=json.dumps({"url": url, "html": html})
+
+            #save data as json str
+            line=json.dumps({"url": url, "html": html})+"\n"
             cached_html.append(line)
+            
             if len(cached_html)>max_cache_size:
                 write_data_file()
                 cached_html.clear()
@@ -54,26 +58,52 @@ class BaikemyCrawler(SimpleCrawler):
                     href = dict(attrs).get("href")
                     if href and tag == "a":
                         href=urljoin(node_url, remove_fragment(href) )
+                            
                         if href.startswith(start_with):
                             self.urls.append(href)
 
             url_seeker = URLSeeker()
             url_seeker.feed(html)
             return url_seeker.urls
+        
+        #filter  urls already get
+        next_urls=[]
 
-        return get_links_from_url(node_url)
+        for can_url in  get_links_from_url(node_url):
+            if can_url in downloaded_urls:
+                logging.warn("{} is downloaded, skip it!".format(can_url))
+                continue
+            next_urls.append(can_url)
+        return next_urls
+
 
 if __name__ == "__main__":
-    base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=A"
+    # begin
+    # downloading settings
+    # for diseases
+    #base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=A"
+    #data_category="disease"
+    #start_with="https://www.baikemy.com/disease/detail/"
+
+    # for symptoms
+    base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=B"
+    data_category="symptoms"
     start_with="https://www.baikemy.com/disease/detail/"
-    root_url="https://www.baikemy.com"
-
-    data_category="disease"
-
-    #open file to write
+    #root url
     cached_html=[]
 
-    f=open(os.path.join(data_path, data_category+".json" ), "w", encoding="utf-8")
+    data_file=os.path.join(data_path, data_category+".json" )
+    root_url="https://www.baikemy.com"
+
+    
+    # end
+    #open file to write
+    
+    downloaded_urls=get_downloaded_urls()
+    logging.info("already donwloaded with {} urls, contents: \n{}\n...".format(len(downloaded_urls), list(downloaded_urls)[:10]) )
+    #exit(0)
+
+    f=open(data_file, "w", encoding="utf-8")
 
     BaikemyCrawler().startCrawler(base_url=base_url)
 
