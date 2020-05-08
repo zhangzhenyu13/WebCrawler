@@ -61,6 +61,8 @@ class BaikemyCrawler(SimpleCrawler):
                             
                         if href.startswith(start_with):
                             self.urls.append(href)
+                        else:
+                            logging.warn("{} not match prefix {}".format(href,start_with))
 
             url_seeker = URLSeeker()
             url_seeker.feed(html)
@@ -86,9 +88,40 @@ if __name__ == "__main__":
     #start_with="https://www.baikemy.com/disease/detail/"
 
     # for symptoms
-    base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=B"
-    data_category="symptoms"
-    start_with="https://www.baikemy.com/disease/detail/"
+    #base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=B"
+    #data_category="symptoms"
+    #start_with="https://www.baikemy.com/disease/detail/"
+
+    # for check over
+    #base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=C"
+    #data_category="checkover"
+    #start_with="https://www.baikemy.com/disease/detail/"
+
+    # for treatment
+    #base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=E"
+    #data_category="treatment"
+    #start_with="https://www.baikemy.com/disease/detail/"
+
+    # for chinese medicine
+    #base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=I"
+    #data_category="chinesemedicine"
+    #start_with="https://www.baikemy.com/disease/detail/"
+
+    # for prevention
+    #base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=K"
+    #data_category="prevention"
+    #start_with="https://www.baikemy.com/disease/detail/"
+
+    # for care
+    #base_url="https://www.baikemy.com/disease/list/0/0?diseaseContentType=N"
+    #data_category="care"
+    #start_with="https://www.baikemy.com/disease/detail/"
+
+    # for medicines
+    base_url="https://www.baikemy.com/medicine/medicineListIndex"
+    data_category="medicine"
+    start_with="https://www.baikemy.com/medicine/detail/"
+
     #root url
     cached_html=[]
 
